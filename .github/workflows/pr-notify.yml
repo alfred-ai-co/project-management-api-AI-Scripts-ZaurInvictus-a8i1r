@@ -1,0 +1,22 @@
+name: PR Webhook Notification
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  send_webhook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send webhook on PR open
+        env:
+          WEBHOOK_URL: https://webhook.site/56946f19-426f-4823-8b35-e78193f8ee1c
+        run: |
+          curl -X POST "$WEBHOOK_URL" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "pr_title": "${{ github.event.pull_request.title }}",
+            "github_user": "${{ github.event.pull_request.user.login }}",
+            "repo_url": "${{ github.event.repository.html_url }}",
+            "pr_description": "${{ github.event.pull_request.body }}"
+          }'
